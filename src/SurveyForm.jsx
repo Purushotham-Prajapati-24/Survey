@@ -274,10 +274,37 @@ function SurveyForm() {
         if (isStepValid) { setStep(prev => prev + 1); }
     };
     const prevStep = () => setStep(prev => prev - 1);
-    const onSubmit = (data) => {
-        console.log("Final Form Data:", data);
-        setStep(prev => prev + 1);
+    // In Survey.jsx
+const onSubmit = async (data) => {
+    console.log("Attempting to send this data to the server:", data);
+
+    try {
+        const response = await fetch('http://localhost:5000/api/surveys', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data), // Convert the form data to a JSON string
+        });
+
+        if (response.ok) {
+            console.log('Server response was OK!');
+            const result = await response.json();
+            console.log('Data saved successfully:', result);
+            setStep(prev => prev + 1); // Move to "Thank You" page on success
+        } else {
+            // If the server responds with an error (like 400 or 500)
+            console.error('Server responded with an error:', response.status, response.statusText);
+            const errorData = await response.json();
+            console.error('Error details:', errorData);
+            alert('There was an error submitting your form. Please check the console.');
+        }
+    } catch (error) {
+        // If there's a network error (e.g., server is down)
+        console.error('A network error occurred:', error);
+        alert('Could not connect to the server. Please ensure it is running.');
     }
+};
 
     const STEPS = [
         { number: 1, title: 'Part A: Household Identification', component: <Step1_Household register={register} errors={errors} /> },
