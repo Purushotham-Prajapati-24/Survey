@@ -279,7 +279,7 @@ const onSubmit = async (data) => {
     console.log("Attempting to send this data to the server:", data);
 
     try {
-        const response = await fetch('http://localhost:5000/api/surveys', {
+        const response = await fetch('https://survey-form-5abe.onrender.com/api/surveys', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
